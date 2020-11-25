@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>book database</title>
+        <meta charset="utf-8">
+    </head>
+    <style>
+        .container {
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            grid-template-columns: 260px auto;
+            grid-template-rows: 30px 100px 50px 200px 50px 200px 50px 250px 300px;
+            grid-template-areas:
+            ". ."
+            "header header"
+            "search-t insert-t"
+            "search insert"
+            "delete-t insert"
+            "delete insert"
+            "update-t count-t"
+            "update count"
+            "table table";
+        }
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: center;
+        }
+        .search {
+            grid-area: search;
+            
+        }
+        .search-t {
+            grid-area: search-t;
+            display: flex;
+            justify-content: center;
+        }
+        .insert {
+            grid-area: insert;
+        }
+        .insert-t {
+            grid-area: insert-t;
+            display: flex;
+            justify-content: center;
+        }
+        .delete {
+            grid-area: delete;
+        }
+        .delete-t {
+            grid-area: delete-t;
+            display: flex;
+            justify-content: center;
+        }
+        .update {
+            grid-area: update;
+        }
+        .update-t {
+            grid-area: update-t;
+            display: flex;
+            justify-content: center;
+        }
+        .count {
+            grid-area: count;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .count-t {
+            grid-area: count-t;
+            display: flex;
+            justify-content: center;
+        }
+        .table {
+            grid-area: table;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .result {
+            margin-top: 10px;
+            height: 100px;
+            width: 250px;
+            text-align: center;
+        }
+        .btn {
+            margin-top: 35px;
+        }
+        .content {
+            width: 100%;
+            display: grid;
+            grid-auto-rows: 35px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-insert {
+            width: 100%;
+            display: grid;
+            grid-template-rows: 23px auto;
+            justify-content: center;
+            align-items: center;
+        }
+        
+    </style>
+    <body>
+        <div class="container">
+            <h1 class="header">Book Management</h1>
+            <h3 class="search-t">search book</h3>
+            <div class="search">   
+                <div class="content">            
+                    <select id="search-type">
+                        <option>book_name</option>
+                        <option>author</option>
+                        <option>book_category</option>
+                    </select>
+                    <input id="search-text" type="text">
+                    <button id="search-btn">submit</button>
+                </div>
+                <div id = "search-result" class="result"></div>
+            </div>
+            
+            <h3 class="insert-t">insert new book</h3>
+            <div class = "insert">
+                <div class="content-insert">
+                    id<input id="insert-id" type="text">
+                    name<input id="insert-name" type="text">
+                    author<input id="insert-author" type="text">
+                    import_date(yyyy/mm/dd)<input id="insert-importdate" type="text">
+                    position<input id="insert-position" type="text">
+                    category<input id="insert-category" type="text">
+                    <button id="add-btn" class="btn">submit</button>
+                </div>
+                <div id = "insert-result" class="result"></div>
+            </div>
+            
+            <h3 class="delete-t">delete book</h3>
+            <div class="delete">
+                <div class="content">
+                    id<input id="delete-id" type="text">
+                    <button id="delete-btn">submit</button>
+                </div>
+                <div id = "delete-result" class="result"></div>
+            </div>
+            
+            <h3 class="update-t">update book</h3>
+            <div class="update">
+                <div class="content">
+                    id<input id="update-id" type="text">
+                    <select id= "update-type">
+                        <option value="name">name</option>
+                        <option value="author">author</option>
+                        <option value="import-date">import date</option>
+                        <option value="position">position</option>
+                        <option value="category">category</option>
+                    </select>
+                    <input id="update-content" type="text">
+                    <button id="update-btn">submit</button>
+                </div>
+                <div id = "update-result" class="result"></div>
+            </div>
+            
+            <h3 class="count-t">count book</h3>
+            <div class = "count">
+                <div class="content">
+                    <button id="count-btn">search</button>
+                </div>
+                <div id = "count-result" class="result"></div>
+            </div>
+            
+
+            <div class="table">
+                <table id = "update-table">
+                    <tr>
+                      <td>id</td>
+                      <td>name</td>
+                      <td>author</td>
+                      <td>enter date</td>
+                      <td>position</td>
+                      <td>category</td>
+                    </tr>
+                  </table>
+            </div>
+        </div>
+
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+            var inputs = document.getElementsByTagName("button");
+            console.log("inputs: ", inputs);
+            inputs[0].addEventListener("click",searchClick);
+            inputs[1].addEventListener("click",insertClick);
+            inputs[2].addEventListener("click",deleteClick);
+            inputs[3].addEventListener("click",updateClick);
+            inputs[4].addEventListener("click",countClick);
+
+            function updateTable() {
+                $.ajax({
+                    type: "POST",
+                    url: "./book-connect.php",
+                    data: {
+                        request: "updateTable",
+                    },
+                    success: showTableResult,
+                    error: onError
+                });
+            }
+            updateTable();
+            function showTableResult(data) {
+                console.log("data:", data);
+                document.querySelector("#update-table").innerHTML = data;
+            }
+
+            function countClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./book-connect.php",
+                    data: {
+                        request: "countBook",
+                    },
+                    success: showCountResult,
+                    error: onError
+                });
+            }
+            
+            function showCountResult(data) {
+                console.log("data:", data);
+                document.querySelector("#count-result").innerHTML = data;
+            }
+            
+
+            function searchClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./book-connect.php",
+                    data: {
+                        request: "search",
+                        searchType: $("#search-type").val(),
+                        searchText: $("#search-text").val()
+                    },
+                    success: showSearchResult,
+                    error: onError
+                });
+            }
+
+            function showSearchResult(data){
+                console.log("data:", data);
+                document.querySelector("#search-result").innerHTML = data;
+            }
+
+            function insertClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./book-connect.php",
+                    data: {
+                        request: "insert",
+                        insertId: $("#insert-id").val(),
+                        insertName: $("#insert-name").val(),
+                        insertAuthor: $("#insert-author").val(),
+                        insertImportdate: $("#insert-importdate").val(),
+                        insertPosition: $("#insert-position").val(),
+                        insertCategory: $("#insert-category").val()
+                    },
+                    success: showInsertResult,
+                    error: onError
+                });
+            }
+
+            function showInsertResult(data) {
+                console.log("data:", data);
+                document.querySelector("#insert-result").innerHTML = data;
+                updateTable();
+            }
+
+            function deleteClick(event) {
+                $.ajax({
+                    type: "POST",
+                    url: "./book-connect.php",
+                    data: {
+                        request: "delete",
+                        deleteId: $("#delete-id").val(),
+                    },
+                    success: showDeleteResult,
+                    error: onError
+                });
+            }
+
+            function showDeleteResult(data) {
+                console.log("data:", data);
+                document.querySelector("#delete-result").innerHTML = data;
+                updateTable();
+            }
+
+            function updateClick(event) {
+                $.ajax({
+                    type: "POST",
+                    url: "./book-connect.php",
+                    data: {
+                        request: "update",
+                        updateId: $("#update-id").val(),
+                        updateType: $("#update-type").val(),
+                        updateContent: $("#update-content").val()
+                    },
+                    success: showUpdateResult,
+                    error: onError
+                });
+            }
+
+            function showUpdateResult(data) {
+                console.log("data:", data);
+                document.querySelector("#update-result").innerHTML = data;
+                updateTable();
+            }          
+
+            function onError(error) {
+                console.log("error: ", error);
+            }
+
+        </script>
+    </body>
+</html>

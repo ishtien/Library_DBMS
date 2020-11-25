@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>borrowbook database</title>
+        <meta charset="utf-8">
+    </head>
+    <style>
+        .container {
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            grid-template-columns: 270px 270px;
+            grid-template-rows: 30px 70px auto;
+            grid-template-areas:
+            ". ."
+            " header header"
+            " exist not-exist ";
+        }
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: center;
+        }
+        .exist {
+            grid-area: exist;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        .not-exist {
+            grid-area: not-exist;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        .text-content {
+            text-align: center;
+            justify-content: center;
+
+        }
+        .math-btn {
+            padding: 7px;
+            margin: 0px 25px 0px 25px;
+            background-color: black;
+            color: white;
+            border-radius: 20px;
+
+        }
+
+        .math-result {
+            text-align: center;
+            justify-content: center;
+            height: 20%;
+            margin: 10px;
+            height: 200px;
+        }
+    </style>
+    <body>
+        <div class="container">
+            <h1 class="header">Borrow Book Management</h1>
+            <div class="exist">
+                <h3 class="text-content">Who hasn't return books?</h3>
+                <button id="exist-btn" class="math-btn">submit</button>
+                <div id = "exist-result" class="math-result"></div>
+            </div>
+            
+            <div class= "not-exist">
+                <h3 class="text-content">Who has never borrow books?</h3>
+                <button id="not-exist-btn" class="math-btn">submit</button>
+                <div id = "not-exist-result" class="math-result"></div>
+            </div>
+            
+            <!-- <div>
+                <table>
+                    <tr>
+                      <td>id</td>
+                      <td>name</td>
+                      <td>author</td>
+                      <td>enter date</td>
+                      <td>position</td>
+                      <td>category</td>
+                    </tr>
+                  </table>
+            </div> -->
+        </div>
+
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+            var inputs = document.getElementsByTagName("button");
+            console.log("inputs: ", inputs);
+            inputs[0].addEventListener("click",existClick);
+            inputs[1].addEventListener("click",notexistClick);
+
+            function existClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./borrowbook-connect.php",
+                    data: {
+                        request: "exist",
+                    },
+                    success: showExistResult,
+                    error: onError
+                });
+            }
+
+            function showExistResult(data){
+                console.log("data:", data);
+                document.querySelector("#exist-result").innerHTML = data;
+            }
+
+            function notexistClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./borrowbook-connect.php",
+                    data: {
+                        request: "not-exist",
+                    },
+                    success: showNotExistResult,
+                    error: onError
+                });
+            }
+
+            function showNotExistResult(data){
+                console.log("data:", data);
+                document.querySelector("#not-exist-result").innerHTML = data;
+            }
+
+            function onError(error) {
+                console.log("error: ", error);
+            }
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>bookvenue database</title>
+        <meta charset="utf-8">
+    </head>
+    <style>
+        .container {
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            grid-template-columns: 270px 270px;
+            grid-template-rows: 30px 80px 340px 270px;
+            grid-template-areas:
+            ". ."
+            "header header"
+            "sum avg "
+            "min  min";
+        }
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: center;
+        }
+        .sum {
+            grid-area: sum;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        .avg {
+            grid-area: avg;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        .min {
+            grid-area: min;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+
+        .text-content {
+            text-align: center;
+            justify-content: center;
+        }
+        .math-btn {
+            padding: 7px;
+            margin: 15px 40px 15px 40px;
+            background-color: black;
+            color: white;
+            border-radius: 20px;
+        }
+
+        .having-btn {
+            padding: 7px;
+            margin: 15px 160px 15px 160px;
+            background-color: black;
+            color: white;
+            border-radius: 20px;
+        }
+
+        .math-result {
+            text-align: center;
+            justify-content: center;
+            height: 50px;
+            margin: 10px;
+        }
+
+        .capacity-select {
+            margin: 5px 40px 5px 40px;
+        }
+    </style>
+    <body>
+        <div class="container">
+            <h1 class="header">Book Venue Management</h1>
+            <div class="sum">
+                <h3 class="text-content">Capacity of meeting Room <br> IS...</h3>
+                <select id="in-capacity1" class="capacity-select">
+                  <option value=2>2</option>
+                  <option value=4>4</option>
+                  <option value=6>6</option>
+                  <option value=8>8</option>
+                  <option value=10>10</option>
+                  <option value=12>12</option>
+                </select>
+                <select id="in-capacity2" class="capacity-select">
+                  <option value=2>2</option>
+                  <option value=4>4</option>
+                  <option value=6>6</option>
+                  <option value=8>8</option>
+                  <option value=10>10</option>
+                  <option value=12>12</option>
+                </select>
+                <button id="sum-btn" class="math-btn">submit</button>
+                <div id = "sum-result" class="math-result"></div>
+            </div>
+            
+            <div class= "avg">
+                <h3 class="text-content">Capacity of Meeting Room <br>IS NOT...</h3>
+                <select id="notin-capacity1" class="capacity-select">
+                  <option value=2>2</option>
+                  <option value=4>4</option>
+                  <option value=6>6</option>
+                  <option value=8>8</option>
+                  <option value=10>10</option>
+                  <option value=12>12</option>
+                </select>
+                <select id="notin-capacity2" class="capacity-select">
+                  <option value=2>2</option>
+                  <option value=4>4</option>
+                  <option value=6>6</option>
+                  <option value=8>8</option>
+                  <option value=10>10</option>
+                  <option value=12>12</option>
+                </select>
+                <button id="avg-btn" class="math-btn">submit</button>
+                <div id = "avg-result" class="math-result"></div>
+            </div>
+            
+            <div class="min">
+                <h3 class="text-content">Who help Readers book venue this year?</h3>
+                <button id="min-btn" class="having-btn">submit</button>
+                <div id = "min-result" class="math-result"></div>
+            </div>
+        </div>
+
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+            var inputs = document.getElementsByTagName("button");
+            console.log("inputs: ", inputs);
+            inputs[0].addEventListener("click",sumClick);
+            inputs[1].addEventListener("click",avgClick);
+            inputs[2].addEventListener("click",minClick);
+
+            function sumClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./bookvenue-connect.php",
+                    data: {
+                        request: "in",                        
+                        inCapacity1: $("#in-capacity1").val(),
+                        inCapacity2: $("#in-capacity2").val(),
+                    },
+                    success: showSumResult,
+                    error: onError
+                });
+            }
+
+            function showSumResult(data){
+                console.log("data:", data);
+                document.querySelector("#sum-result").innerHTML = data;
+            }
+
+            function avgClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./bookvenue-connect.php",
+                    data: {
+                        request: "notin",
+                        notinCapacity1: $("#notin-capacity1").val(),
+                        notinCapacity2: $("#notin-capacity2").val(),
+                    },
+                    success: showAvgResult,
+                    error: onError
+                });
+            }
+
+            function showAvgResult(data){
+                console.log("data:", data);
+                document.querySelector("#avg-result").innerHTML = data;
+            }
+
+            function minClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./bookvenue-connect.php",
+                    data: {
+                        request: "having",
+                    },
+                    success: showMinResult,
+                    error: onError
+                });
+            }
+
+            function showMinResult(data){
+                console.log("data:", data);
+                document.querySelector("#min-result").innerHTML = data;
+            }
+
+
+            function onError(error) {
+                console.log("error: ", error);
+            }
+
+        </script>
+    </body>
+</html>

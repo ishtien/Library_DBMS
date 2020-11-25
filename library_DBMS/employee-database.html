@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>employee database</title>
+        <meta charset="utf-8">
+    </head>
+    <style>
+        .container {
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            grid-template-columns: 220px 220px;
+            grid-template-rows: 30px 70px 170px 170px;
+            grid-template-areas:
+            ". ."
+            " header header"
+            " sum avg "
+            "min max ";
+        }
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: center;
+        }
+        .sum {
+            grid-area: sum;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        .avg {
+            grid-area: avg;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        .min {
+            grid-area: min;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        .max {
+            grid-area: max;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+        }
+        .text-content {
+            text-align: center;
+            justify-content: center;
+        }
+        .math-btn {
+            padding: 7px;
+            margin: 0px 25px 0px 25px;
+            background-color: black;
+            color: white;
+            border-radius: 20px;
+        }
+
+        .math-result {
+            text-align: center;
+            justify-content: center;
+            height: 50px;
+            margin: 10px;
+        }
+    </style>
+    <body>
+        <div class="container">
+            <h1 class="header">Employee Management</h1>
+            <div class="sum">
+                <h3 class="text-content">sum salary</h3>
+                <button id="sum-btn" class="math-btn">submit</button>
+                <div id = "sum-result" class="math-result"></div>
+            </div>
+            
+            <div class= "avg">
+                <h3 class="text-content">average salary</h3>
+                <button id="avg-btn" class="math-btn">submit</button>
+                <div id = "avg-result" class="math-result"></div>
+            </div>
+            
+            <div class="min">
+                <h3 class="text-content">min salary</h3>
+                <button id="min-btn" class="math-btn">submit</button>
+                <div id = "min-result" class="math-result"></div>
+            </div>
+            
+            <div class="max">
+                <h3 class="text-content">max salary</h3>
+                <button id="max-btn" class="math-btn">submit</button>
+                <div id = "max-result" class="math-result"></div>
+            </div>
+            
+            <!-- <div>
+                <table>
+                    <tr>
+                      <td>id</td>
+                      <td>name</td>
+                      <td>author</td>
+                      <td>enter date</td>
+                      <td>position</td>
+                      <td>category</td>
+                    </tr>
+                  </table>
+            </div> -->
+        </div>
+
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+            var inputs = document.getElementsByTagName("button");
+            console.log("inputs: ", inputs);
+            inputs[0].addEventListener("click",sumClick);
+            inputs[1].addEventListener("click",avgClick);
+            inputs[2].addEventListener("click",minClick);
+            inputs[3].addEventListener("click",maxClick);
+
+            function sumClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./employee-connect.php",
+                    data: {
+                        request: "sum",
+                    },
+                    success: showSumResult,
+                    error: onError
+                });
+            }
+
+            function showSumResult(data){
+                console.log("data:", data);
+                document.querySelector("#sum-result").innerHTML = data;
+            }
+
+            function avgClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./employee-connect.php",
+                    data: {
+                        request: "avg",
+                    },
+                    success: showAvgResult,
+                    error: onError
+                });
+            }
+
+            function showAvgResult(data){
+                console.log("data:", data);
+                document.querySelector("#avg-result").innerHTML = data;
+            }
+
+            function minClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./employee-connect.php",
+                    data: {
+                        request: "min",
+                    },
+                    success: showMinResult,
+                    error: onError
+                });
+            }
+
+            function showMinResult(data){
+                console.log("data:", data);
+                document.querySelector("#min-result").innerHTML = data;
+            }
+
+            function maxClick(event){
+                $.ajax({
+                    type: "POST",
+                    url: "./employee-connect.php",
+                    data: {
+                        request: "max",
+                    },
+                    success: showMaxResult,
+                    error: onError
+                });
+            }
+
+            function showMaxResult(data){
+                console.log("data:", data);
+                document.querySelector("#max-result").innerHTML = data;
+            }
+
+
+            function onError(error) {
+                console.log("error: ", error);
+            }
+
+        </script>
+    </body>
+</html>

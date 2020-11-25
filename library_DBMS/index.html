@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Library</title>
+        <meta content="text/html"; meta charset="utf-8" http-equiv="content-type">
+    </head>
+    <style>
+      .workarea-view-scroll-wrapper::-webkit-scrollbar { 
+	      width: 10px;
+	    }
+	    .workarea-view-scroll-wrapper::-webkit-scrollbar-track {
+	      -webkit-border-radius: 10px;
+	      border-radius: 10px;
+	      margin:80px 0 5px 0;
+	    }
+	    .workarea-view-scroll-wrapper::-webkit-scrollbar-thumb {
+	      -webkit-border-radius: 4px;
+	      border-radius: 4px;
+	      background: rgb(219,219,219);
+	    }
+      .headline {
+        margin: 7px;
+      }     
+      .content {
+        height: 100%;
+        /* border-style: groove; */
+        display: grid;
+        grid-template-columns: 240px auto 250px;
+
+      }
+      .leftside {
+        height: 100%;
+        border-style: groove;
+      }
+      .leftside-button {
+        padding: 5px;
+        margin: 2px;
+        border-style: groove;
+        background-color: white;
+        font-size: 14px;
+        width: 98%;
+      }
+      .middleside {
+        height: 100%;
+        border-style: groove;
+        margin-left: 2px;
+        margin-right: 2px;
+      }
+      .middlecontent {
+        height: 100%;
+        width: 100%;
+        border: none;
+        overflow: scroll;
+      }
+      .rightside {
+        height: 100%;
+        border-style: groove;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .sql-title {
+        margin-top: 20px;
+        margin-left: 10px;
+      }
+      .sql-input {
+        width: 80%;
+        margin-top: 10px;
+      }
+      .sql-btn {
+        background-color: white;
+        padding: 5px;
+        margin: 5px;
+        justify-content: center;
+        border-radius: 10px;
+        
+      }
+      .sql-result {
+        height: 200px;
+        overflow:auto;
+      }
+      .background {
+        background-image:url("./img/library.jpg");
+        background-repeat:no-repeat;
+        background-attachment:fixed;
+        background-position:bottom left;
+        background-size: 23%;
+      }
+
+
+      </style>
+    <body class="background">
+        <!-- <div>
+          <img src="./img/headline.jpg" class="headline">
+        </div> -->
+        <div class="content">
+          <div class="leftside">
+            <h4 class="headline">LIBRARY</h4>
+            <button class="leftside-button">Readers Management</button>
+            <button class="leftside-button">Books Management</button>
+            <button class="leftside-button">Employees Management</button>
+            <button class="leftside-button">Borrow Books Management</button>
+            <button class="leftside-button">Book Venue Management</button>
+          </div>
+          <div class="middleside">
+            <iframe id="view-div" class="middlecontent" class="workarea-view-scroll-wrapper"  src="./book-database.html"></iframe>
+          </div>
+          <div class="rightside">
+            <h4 class="sql-title">SQL command</h4>
+            <textarea cols="10" rows="15" id="sql-text" class="sql-input">input your sql command...
+            </textarea>
+            <button id = "sql-sumit" class="sql-btn">submit</button>
+            <div id = "result-area" class="sql-result"></div>
+          </div>   
+        </div>
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script>
+         var inputs = document.getElementsByTagName("button");
+          inputs[0].addEventListener("click",changeViewReader);
+          inputs[1].addEventListener("click",changeViewBook);
+          inputs[2].addEventListener("click",changeViewEmployee);
+          inputs[3].addEventListener("click",changeViewBorrowBook);
+          inputs[4].addEventListener("click",changeViewBookVenue);
+          inputs[5].addEventListener("click",sqlClick);
+          function changeViewReader(event) {
+            document.getElementById("view-div").src = "./reader-database.html";
+          }
+          function changeViewBook(event) {
+            document.getElementById("view-div").src = "./book-database.html";
+          }
+          function changeViewEmployee(event) {
+            document.getElementById("view-div").src = "./employee-database.html";
+          }
+          function changeViewBorrowBook(event) {
+            document.getElementById("view-div").src = "./borrowbook-database.html";
+          }
+          function changeViewBookVenue(event) {
+            document.getElementById("view-div").src = "./bookvenue-database.html";
+          }
+          function sqlClick(event) {
+                $.ajax({
+                    type: "POST",
+                    url: "./book-connect.php",
+                    data: {
+                        request: "sqlCommand",
+                        text: $("#sql-text").val()
+                    },
+                    success: showResult,
+                    error: onError
+                });
+            }
+            function showResult(data) {
+                console.log("data:", data);
+                document.querySelector("#result-area").innerHTML = data;
+            }
+            function onError(error) {
+                console.log("error: ", error);
+            }
+        </script>
+        <style>
+        </style>
+    </body>
+</html>
